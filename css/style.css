@@ -43,3 +43,35 @@ body
 	padding: 10px;
 	z-index: 2;
 }
+
+.regForm
+{
+	background: #E3CDA4;
+	
+	border-style: solid;
+	border-radius: 5px;
+	border-color: #2F343B;
+	
+	width: 225px;
+	margin: 60px auto 30px;
+	padding: 10px;
+	position: relative;
+}
+
+.regForm .field
+{
+	margin: 4px 0px 1px 5px;
+}
+
+.regForm #password
+{
+	margin: 2em 0 0 0;
+}
+
+.regForm #email 
+{
+	
+	margin: 2em 0px 1.5em 0;
+	width: 15em;
+}
+
