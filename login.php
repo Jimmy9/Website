@@ -1,4 +1,11 @@
-<?php 
+<?php
+ 
+$exists = "";
+$formerrors = ["User_Nameerror" => false, "Passworderror" => false];
+
+extract($_POST);
+
+$inputlist = array( "User_Name" => "inputusername", "Password" => "inputpassword");
 
 class Login
 {
@@ -11,10 +18,59 @@ class Login
 		$this->userName = $uName;
 		$this->password = hash('sha256',$pWord);
 		return true;
+		
+		if(isset($submit)){
+		if($this->userName == ""){
+			$formerrors["User_Nameerror"]=true;
+			$this->isError = true;
+		}
+		if($this->password == ""){
+			$formerrors["Passworderror"]=true;
+			$this->isError = true;
+		}
+		
+		///query function
+		if(!$this->isError){
+			$query = "SELECT username, password
+					FROM usersinfo
+					WHERE username = '" . $this->userName . "' AND password = '" . $this->password . "'; ";
+			if( !( $database = mysql_connect("localhost", "root", "")))
+				die( "Couldn't connect to database" );
+			
+			if( !( $result = mysql_query( $query, $database ))){
+				print( "Couldn't execute query <br />" );
+				die( mysql_error() );
+			}
+			
+			$holder = 1;
+			while($display = mysql_fetch_assoc($result)){
+				if($display['username'] == $this->userName){
+					session_start();
+					$_SESSION['user_id'] = "$this->userName";
+					print("$this->userName Logged In");
+					header("Location: index.php");
+					$holder = 0;
+				}
+			}
+			if($holder == 1){
+				print("Sorry, please try again");
+				header("Location: login.php");
+			}
+			
+			mysql_close( $database );
+			
+				print("</body></html>" );
+				die();
+			print("
+			
+			");
+			}
+		}
 	}
 	
 };
-
+	//
+	
 
 ?>
 
