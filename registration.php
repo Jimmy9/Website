@@ -49,22 +49,22 @@ if (isset($_POST['username']) && isset($_POST['password'])
 				$_POST['passwordAgain'], $_POST['email'], 
 				$_POST['firstName'], $_POST['lastName']);
 				
-	$reg->printData();
+	//$reg->printData();
 }
 ?>
-<form class="RegForm" name="RegForm" method="post" action="">
+<form class="regForm" name="RegForm" method="post" action="">
 	
 	<p class="field">
-		<input type="text" name="username" placeholder="Username" />
+		<input type="text" id="username" name="username" placeholder="Username" />
 	</p>
 	<p class="field">
-		<input type="password" name="password" placeholder="Password" />
+		<input type="password" id="password" name="password" placeholder="Password" />
 	</p>
 	<p class="field">
 		<input type="password" name="passwordAgain" placeholder="Password Again" / >
 	</p>
 	<p class="field">
-		<input type="text" name="email" placeholder="Email Address" / >
+		<input type="text" id="email" name="email" placeholder="Email Address" / >
 	</p>
 	<p class="field">
 		<input type="text" name="firstName" placeholder="First Name" / >
@@ -73,7 +73,7 @@ if (isset($_POST['username']) && isset($_POST['password'])
 		<input type="text" name="lastName" placeholder="Last Name" / >
 	</p>
 	<p class="sumbit">
-		<input type="submit" name="button" id="butto" value="Submit" / >
+		<input type="submit" name="button" id="button" value="Submit" / >
 	</p>
 </form>
 </body>
