@@ -34,14 +34,14 @@ if($result){
 	// Your message
 	$message="Your Comfirmation link \r\n";
 	$message.="Click on this link to activate your account \r\n";
-	$message.="http://www.yourweb.com/confirmation.php?passkey=$confirm_code";
+	$message.="http://www.trc202.com/confirmation.php?passkey=$confirm_code";
 
 
 	// send email
 	$sentmail = mail($to,$subject,$message,$header);
 }// if not found
 else {
-	echo "Not found your email in our database";
+	echo "Failed to save the confirmation code to the database, please try again. If the problem persists please contact the owner of the website.";
 }
 
 
