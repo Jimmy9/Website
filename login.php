@@ -77,8 +77,22 @@ class Login
 <html>
 <head>
 	<title> Discourse Analysis - Login Page </title>
-	
 	<link rel="stylesheet" type="text/css" href="css/style.css" />
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $('#button').click(function(){
+                    if($('#username').val() == ""){
+                        $('#username').after("<span><img src='Images/red-x.gif' alt='X'/></span>");
+                        return false;
+                    }
+                    if($('#password').val() == ""){
+                        $('#password').after("<span><img src='Images/red-x.gif' alt='X'/></span>");
+                        return false;
+                    }
+                });
+            });
+        </script>
 </head>
 
 <body>
@@ -96,10 +110,10 @@ if (isset($_POST['username']))
 ?>		
 <form class="loginForm" name="LoginForm" method="post" action="">
 	<p class="field">
-		<input type="text" name="username"  placeholder="Username" />
+		<input type="text" id="username" name="username"  placeholder="Username" />
 	</p>
 	<p class="field">
-		<input type="password" name="password" placeholder="Password" / > 
+		<input type="password" id="password" name="password" placeholder="Password" /> 
 	</p>
 	<p class="submit">
 			<input type="submit" name="button" id="button" value="Submit" />
