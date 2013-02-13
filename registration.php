@@ -37,52 +37,78 @@ class RegForm
 <html>
 <head>
 	<title> Discourse Analysis - Registration PAge</title>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/style.css">
+        <script type="text/javascript">
+        $(document).ready(function(){
+            $('#button').click(function(){
+                if($("#password").val() != $("#passwordAgain").val() || $("#password").val() == "" || $("#passwordAgain").val() == ""){
+                    $("#password").after("<span><img src='Images/red-x.gif' alt='X'/></span>");
+                    $("#passwordAgain").after("<span><img src='Images/red-x.gif' alt='X'/><div style='color:red'>Passwords must match</div></span>");
+                    return false;
+                }
+                if($('#username').val() == ""){
+                    $("#username").after("<span><img src='Images/red-x.gif' alt='X'/></span>");
+                    return false;
+                }
+                if($('#email').val() == ""){
+                    $("#email").after("<span><img src='Images/red-x.gif' alt='X'/></span>");
+                    return false;
+                }
+            });
+        });
+        </script>
 </head>
 <body>
-
 <?php
 $reg = new RegForm;
 $securimage = new Securimage();
+$catpchaError = null;
+$username = $password = $passwordAgain = $emial = $fname = $lname = null;
 
 
-if (isset($_POST['username']) && isset($_POST['password'])
+if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['passwordAgain'])
         && isset($_POST['firstName'])  && isset($_POST['lastName'])
         && isset($_POST['email']) )	
 {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $passwordAgain = $_POST['passwordAgain'];
+    $emial = $_POST['email'];
+    $fname = $_POST['firstName'];
+    $lname = $_POST['lastName'];
+    
     if($securimage->check($_POST['captcha_code']) == true){
-        $reg->grabFromSubmit($_POST['username'], $_POST['password'],
-                                $_POST['passwordAgain'], $_POST['email'], 
-                                $_POST['firstName'], $_POST['lastName']);
-
+        $reg->grabFromSubmit($username, $password, $passwordAgain, $emial, $fname, $lname);
         $reg->printData();
     }
     else{
-        echo("no soup");
+        $catpchaError = "The code did not match. Try Again";
     }
 }
 
 
 ?>
+    
 <form class="regForm" name="RegForm" method="post" action="">
 	
 	<p class="field">
-		<input type="text" id="username" name="username" placeholder="Username" />
+		<input type="text" id="username" name="username" placeholder="Username" value="<?php checkIsset($username) ?>" />
 	</p>
 	<p class="field">
-		<input type="password" id="password" name="password" placeholder="Password" />
+		<input type="password" id="password" name="password" placeholder="Password" value="<?php checkIsset($password) ?>" />
 	</p>
 	<p class="field">
-		<input type="password" name="passwordAgain" placeholder="Password Again" />
+		<input type="password" id="passwordAgain" name="passwordAgain" placeholder="Password Again" value="<?php checkIsset($passwordAgain) ?>" />
 	</p>
 	<p class="field">
-		<input type="text" id="email" name="email" placeholder="Email Address" />
+		<input type="text" id="email" name="email" placeholder="Email Address" value="<?php checkIsset($emial) ?>" />
 	</p>
 	<p class="field">
-		<input type="text" name="firstName" placeholder="First Name" />
+		<input type="text" name="firstName" placeholder="First Name" value="<?php checkIsset($fname) ?>"/>
 	</p>
 	<p class="field">
-		<input type="text" name="lastName" placeholder="Last Name" />
+		<input type="text" name="lastName" placeholder="Last Name" value="<?php checkIsset($lname) ?>" />
 	</p>
         <br />
         <table>
@@ -91,12 +117,17 @@ if (isset($_POST['username']) && isset($_POST['password'])
                     <img id="captcha" style="border: 1px solid #2F343B" src="secureimage/securimage_show.php" alt="CAPTCHA Image" />
                 </td>
                 <td>
-                    <a href="#" onclick="document.getElementById('captcha').src = 'secureimage/securimage_show.php';"><img src="secureimage/images/refresh.png" alt="Refresh Image"/></a>
+                    <a href="#" onclick="document.getElementById('captcha').src = 'secureimage/securimage_show.php';"><img src="secureimage/Images/Refresh Icon.jpg" alt="Refresh Image"/></a>
                 </td>
             </tr>
             <tr>
                 <td>
                     Enter Code: <input type="text" name="captcha_code" size="10" maxlength="6" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="color:red">
+                    <?php checkIsset($catpchaError) ?>
                 </td>
             </tr>
         </table>
@@ -107,3 +138,14 @@ if (isset($_POST['username']) && isset($_POST['password'])
 </body>
 
 </html>
+
+<?php
+    function checkIsset($str){
+        if (isset($str)){
+            echo $str;
+        }
+        else{
+            return "";
+        }
+    }
+?>
