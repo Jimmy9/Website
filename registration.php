@@ -52,7 +52,7 @@ if (isset($_POST['username']) && isset($_POST['password'])
 	$reg->printData();
 }
 ?>
-<form class="RegForm" name="RegForm" method="post" action="">
+<form class="RegForm" name="RegForm" method="post" action="signup_ac.php">
 	
 	<p class="field">
 		<input type="text" name="username" placeholder="Username" />
