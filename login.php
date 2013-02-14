@@ -80,14 +80,21 @@ class Login
 	<link rel="stylesheet" type="text/css" href="css/style.css" />
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
         <script type="text/javascript">
+            formError = false;
             $(document).ready(function(){
                 $('#button').click(function(){
                     if($('#username').val() == ""){
-                        $('#username').after("<span><img src='Images/red-x.gif' alt='X'/></span>");
+                        if(!formError){
+                            $('#username').after("<span><img src='Images/red-x.gif' alt='X'/></span>");
+                        }
+                        formError = true;
                         return false;
                     }
                     if($('#password').val() == ""){
-                        $('#password').after("<span><img src='Images/red-x.gif' alt='X'/></span>");
+                        if(!formError){
+                            $('#password').after("<span><img src='Images/red-x.gif' alt='X'/></span>");
+                        }
+                        formError = true;
                         return false;
                     }
                 });
