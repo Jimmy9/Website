@@ -1,22 +1,46 @@
 <?php
-// This Class checks to see if an email is valid
+/*This file takes the information from registration.php and
+inserts it into a temporary table pending the user clicking on 
+a comfirmation code.
 
-include('config.php');
+Note in order for this class to do anything you must make sure
+that the RegForm action in registration points to this file.
+*/ 
 
-// table name
-$tbl_name=temp_members_db;
+
+//--------------- Start sql setup -----------------------------------//
+//TODO: replace with single config file
+$host = "localhost"; // Host name
+$username = "root"; // Mysql username
+$password = "not telling you github"; // Mysql password
+$db_name = "discourseanalysis"; // Database name
+$dbLink = new mysqli("$host", "$username", "$password", "$db_name");
+
+//Connect to the database
+if ($dbLink->connect_errno) {
+    printf("Connect failed: %s\n", $dbLink->connect_error);
+    exit();
+}
+//--------------------------End sql setup ---------------------------//
+
+$defaultURL = "http://www.trc202.com";
+
+// temp table name
+$tempTable="tempusersinfo";
 
 // Random confirmation code
 $confirm_code=md5(uniqid(rand()));
 
 // values sent from form
-$name=$_POST['name'];
+$username=$_POST['username'];
+$password=$_POST['password']; 
 $email=$_POST['email'];
-$country=$_POST['country'];
-
+$fName=$_POST['firstName'];
+$lName=$_POST['lastName'];
+$name = $fName . " " . $lName; 
 // Insert data into database
-$sql="INSERT INTO $tbl_name(confirm_code, name, email, password, country)VALUES('$confirm_code', '$name', '$email', '$password', '$country')";
-$result=mysql_query($sql);
+$sql="INSERT INTO $tempTable(confirm_code, Username, Password, Email, Name)VALUES('$confirm_code', '$username', '$password', '$email', '$name' )";
+$result=$dbLink->query($sql);
 
 // if suceesfully inserted data into database, send confirmation link to email
 if($result){
@@ -34,7 +58,7 @@ if($result){
 	// Your message
 	$message="Your Comfirmation link \r\n";
 	$message.="Click on this link to activate your account \r\n";
-	$message.="http://www.trc202.com/confirmation.php?passkey=$confirm_code";
+	$message.=$defaultURL ."/confirmation.php?registrationId=$confirm_code";
 
 
 	// send email
