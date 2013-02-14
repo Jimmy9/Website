@@ -40,23 +40,34 @@ class RegForm
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/style.css">
         <script type="text/javascript">
-        $(document).ready(function(){
-            $('#button').click(function(){
-                if($("#password").val() != $("#passwordAgain").val() || $("#password").val() == "" || $("#passwordAgain").val() == ""){
-                    $("#password").after("<span><img src='Images/red-x.gif' alt='X'/></span>");
-                    $("#passwordAgain").after("<span><img src='Images/red-x.gif' alt='X'/><div style='color:red'>Passwords must match</div></span>");
-                    return false;
-                }
-                if($('#username').val() == ""){
-                    $("#username").after("<span><img src='Images/red-x.gif' alt='X'/></span>");
-                    return false;
-                }
-                if($('#email').val() == ""){
-                    $("#email").after("<span><img src='Images/red-x.gif' alt='X'/></span>");
-                    return false;
-                }
-            });
-        });
+            var formError = Array();
+            formError[false, false, false];
+            $(document).ready(function(){
+                $('#button').click(function(){
+                    if($('#username').val() == ""){
+                        if(!formError[0]){
+                            $("#username").after("<span><img src='Images/red-x.gif' alt='X'/></span>");
+                        }
+                        formError[0] = true;
+                        return false;
+                    }
+                    if($("#password").val() != $("#passwordAgain").val() || $("#password").val() == "" || $("#passwordAgain").val() == ""){
+                        if(!formError[1]){
+                            $("#password").after("<span><img src='Images/red-x.gif' alt='X'/></span>");
+                            $("#passwordAgain").after("<span><img src='Images/red-x.gif' alt='X'/><div style='color:red'>Passwords must match</div></span>");
+                        }
+                        formError[1] = true;
+                        return false;
+                    }
+                    if($('#email').val() == ""){
+                        if(!formError[2]){
+                            $("#email").after("<span><img src='Images/red-x.gif' alt='X'/></span>");
+                        }
+                        formError[2] = true;
+                        return false;
+                    }
+                });
+            }); 
         </script>
 </head>
 <body>
