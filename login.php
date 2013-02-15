@@ -32,9 +32,34 @@ $login = new Login;
 
 if (isset($_POST['username']))
 {
-	$login->grabFromSubmit($_POST['username'], $_POST["password"]);
+	$host = "localhost"; // Host name
+	$username = "root"; // Mysql username
+	$password = "not telling github my password"; // Mysql password
+	$db_name = "discourseanalysis"; // Database name
+	$dbLink = new mysqli("$host", "$username", "$password", "$db_name");
+	
+	$userTable="usersinfo";
 
-	$login->showInformation();
+	if ($dbLink->connect_errno) {
+		printf("Connect failed: %s\n", $dbLink->connect_error);
+		exit();
+	}
+	
+	$username = $_POST['username'];
+	$password= $_POST['password'];
+	//$password = hash('sha256',$password);
+	
+	$sql = "SELECT username, password FROM $userTable WHERE username = '".$username."' AND password = '" .$password. "';";
+	$result=$dbLink->query($sql);
+	
+	if($result->num_rows > 0)
+	{
+		print $result->num_rows;
+	}
+	else 
+	{
+		echo "Fails";
+	}
 }
 	
 ?>		
