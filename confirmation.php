@@ -5,7 +5,7 @@
 //TODO: replace with single config file
 $host = "localhost"; // Host name
 $username = "root"; // Mysql username
-$password = "not telling you github"; // Mysql password
+$password = "not telling github my password"; // Mysql password
 $db_name = "discourseanalysis"; // Database name
 $dbLink = new mysqli("$host", "$username", "$password", "$db_name");
 
