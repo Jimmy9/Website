@@ -1,17 +1,61 @@
 body{ background-color: #F3E2A9; }
 
-.navigation{
+#navigation{
 list-style-type:none;
-margin:0;
-padding-left:40px;
-overflow:hidden;
+float: left;
+position: relative;
+z-index: 5;
 text-decoration: none;}
 
-li{
+#navigation li{
+    float:left;
+    margin-right: 10px;
+    position: relative;
+}
+#navigation a{
+    display: block;
+    padding: 5px;
+    text-decoration: none;
+}
+#navigation a:hover{
+    text-decoration: underline;
+}
+#navigation ul{
+    background-color: #E0E0F8;
+    background:rgba(255,255,255,0);
+    list-style: none;
+    position: absolute;
+    left: -9999px;
+}
+#navigation ul li{
+    padding-top:1px;
+    float: none;
+}
+#navigation ul a{
+    white-space: nowrap;
+}
+#navigation li:hover ul{
+    padding-top:10px;
+    left: -40px;
+    top:35px;
+}
+#navigation li:hover a{
+    background-color:#F6CECE;
+    text-decoration: underline;
+}
+#navigation li:hover ul a{
+    text-decoration: none;
+}
+#navigation li:hover ul li a:hover{
+    background-color: #F6CECE;
+    text-decoration: underline;
+}
+
+/*li{
 float:left;
 display: inline;
 font-size: medium;
-text-decoration: none;}
+text-decoration: none;}*/
 
 #LoginField{
 	float:left;
