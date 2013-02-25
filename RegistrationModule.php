@@ -6,13 +6,13 @@
  **/
 class RegistrationModule
 {
-	var $dbConnect;
-	var $username = "";
-	var $password = "";
-	var $email = "";
-	var $realName = "";
-	var $tempUserTable = "";
-	var $userTable = "";
+	private $dbConnect;
+	private $username = "";
+	private $password = "";
+	private $email = "";
+	private $realName = "";
+	private $tempUserTable = "";
+	private $userTable = "";
 	
 	/**
 	 *
@@ -60,6 +60,7 @@ class RegistrationModule
 	 **/
 	function InputPassword($password, $confirmPassword)
 	{
+		if(
 		
 	}
 	
@@ -74,7 +75,7 @@ class RegistrationModule
 	/**
 	 *
 	 **/
-	function RequestConfirmation($email, $confirmEmail)
+	function RequestConfirmation()
 	{
 		
 	}
