@@ -6,7 +6,7 @@
  **/
 class RegistrationModule
 {
-	var $dbLink;
+	var $dbConnect;
 	var $username = "";
 	var $password = "";
 	var $email = "";
@@ -17,9 +17,9 @@ class RegistrationModule
 	/**
 	 *
 	 **/
-	function RegistrationModule($dbLink)
+	function RegistrationModule($dbConnect)
 	{
-		$this->dbLink = $dbLink;
+		$this->dbConnect = $dbConnect;
 		$this->tempUserTable = "tempusersinfo"
 		$this->userTable = "userTable";
 	}
@@ -29,7 +29,14 @@ class RegistrationModule
 	 **/
 	function InputName($firstName, $lastName)
 	{
-	
+		if (!empty($firstName) && !empty($lastName)) {
+			$this->realName = $firstName . " " . $lastName;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 	/**
@@ -37,7 +44,15 @@ class RegistrationModule
 	 **/
 	function InputUsername($username)
 	{
-	
+		if(!empty($username) && (strlen($username) >= 3))
+		{
+			//TODO check to see if the username exists in the database
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 	/**
@@ -45,7 +60,7 @@ class RegistrationModule
 	 **/
 	function InputPassword($password, $confirmPassword)
 	{
-	
+		
 	}
 	
 	/**
@@ -53,14 +68,67 @@ class RegistrationModule
 	 **/
 	function InputEmail($email, $confirmEmail)
 	{
-	
+		
 	}
+	
+	/**
+	 *
+	 **/
+	function RequestConfirmation($email, $confirmEmail)
+	{
+		
+	}
+	
 	
 	/**
 	 *
 	 **/
 	function ConfirmUser($key)
 	{
+		if($stmt = $this->dbConnect->prepare("SELECT * FROM ? WHERE confirm_code=?"))
+		{
+			$stmt->bind_param("ss", $this->tempUserTable, $key);
+			$stmt->execute();
+			$stmt->bind_result($keyResult);
+			$stmt->fetch();
+			$stmt->close();
+			if($uniqueIdsQueryResult)
+			{
+				// Count how many row has this registrationId
+				$count = $uniqueIdsQueryResult->num_rows;
+
+				// if found this registrationId in our database, retrieve data from table listed in
+				if($count==1)
+				{
+					$rows=$uniqueIdsQueryResult->fetch_array(MYSQLI_ASSOC);
+					$username=$rows['Username'];
+					$email=$rows['Email'];
+					$password=$rows['Password'];
+					$name=$rows['Name'];
+					
+					if($stmt = $this->dbConnect->prepare("INSERT INTO ?(Username, Password, Email, Name)VALUES(?, ?, ?, ?)"))
+					{
+						$stmt->bind_param("sssss", $this->userTable, $username, $password, $email, $name);
+						$stmt->execute();
+						$stmt->bind_result($successfullyActivated);
+						$stmt->fetch();
+						$stmt->close();
+						if($successfullyActivated){
+							if($stmt = $this->dbConnect->prepare("DELETE FROM ? WHERE confirm_code = ?"))
+							{
+								$stmt->bind_param("ss", $this->tempUserTable, $key);
+								$stmt->execute();
+								$stmt->bind_result($removed);
+								$stmt->fetch();
+								$stmt->close();
+							}
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
 		
 	}
 	
