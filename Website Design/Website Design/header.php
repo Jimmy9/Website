@@ -10,25 +10,24 @@
 </head>
 <body>
     <div id="header">
-        <img src="logo.jpg" height="200" width="70%" alt="Logo" />
+        <img src="logo.jpg" height="200" width="80%" alt="Logo" />
         <div id="menu">
             <ul id="navigation">
-                <li><a class="navButton" href="home.html">Home</a></li>
-                <li><a class="navButton" href="upload.html">Upload to Workspace</a></li>
+                <li><a class="navButton" href="home.php">Home</a></li>
+                <li><a class="navButton" href="upload.php">Upload to Workspace</a></li>
                 <li><a class="navButton" href="myfiles.html">My Files</a></li>
                 <li>
                     <a class="navButton" href="">Administrative Options</a>
                     <ul>
-                        <li><a class="navButton" href="">option 1</a></li>
-                        <li><a class="navButton" href="">option 2</a></li>
-                        <li><a class="navButton" href="">option 3</a></li>
+                        <li><a class="navButton" href="">File Options</a></li>
+                        <li><a class="navButton" href="">User Options</a></li>
                     </ul>
                 </li>
                 <li>
                     <a class="navButton" href="">Login / Register</a>
                     <ul>
-                        <li><a class="navButton" href="">Login</a></li>
-                        <li><a class="navButton" href="">Register</a></li>
+                        <li><a class="navButton" href="login.php">Login</a></li>
+                        <li><a class="navButton" href="register.php">Register</a></li>
                     </ul>
                 </li>
             </ul>
