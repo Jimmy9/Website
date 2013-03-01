@@ -1,5 +1,8 @@
 <?php
 
+
+require('./lib/PasswordHash.php');
+
 /**
  *
  *
@@ -67,6 +70,8 @@ class RegistrationModule
 		if((strcmp($password ,$confirmPassword) == 0) && (strlen($password) >= 6))
 		{
 			//TODO hash password here
+			//$pwdHasher = new PasswordHash(8, FALSE);
+			//$password = HashPassword($password)
 			$this->password = $password;
 			return true;
 		}

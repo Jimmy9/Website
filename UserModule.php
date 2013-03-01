@@ -90,6 +90,12 @@ class UserModule
 			return "";
 	}
 	
-	
+	/**
+	 * Returns true if the user is an admin, false otherwise
+	 **/
+	function IsAdmin()
+	{
+		
+	}
 }
 ?>
