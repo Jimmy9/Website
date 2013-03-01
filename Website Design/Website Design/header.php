@@ -15,7 +15,7 @@
             <ul id="navigation">
                 <li><a class="navButton" href="home.php">Home</a></li>
                 <li><a class="navButton" href="upload.php">Upload to Workspace</a></li>
-                <li><a class="navButton" href="myfiles.html">My Files</a></li>
+                <li><a class="navButton" href="myfiles.php">My Files</a></li>
                 <li>
                     <a class="navButton" href="">Administrative Options</a>
                     <ul>
