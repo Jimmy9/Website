@@ -15,9 +15,9 @@ if($connection == false){
 //START USER TEST
 $userMod = new UserModule($connection);
 
-$loggedIn = $userMod->LoginUser("trc202","password");
+$loggedIn = $userMod->LoginUser("workingPW","thisisworkingtest");
 if($loggedIn == true){
-	echo "</p>Login successful, this should not happen at this point in time. Username is: " . $userMod->GetUserName() . "</p>";
+	echo "</p>Login successful, it works !!!!!!!!!!</p>";
 }else{
 	echo "<p>User not logged in. This means the test is successful.</p>";
 }
@@ -25,8 +25,6 @@ if($loggedIn == true){
 if(session_id() == ''){
 	session_start();
 }
-echo "<p>Creating a fake login manually...</p>";
-$_SESSION['username'] = "trc202";
 
 if($userMod->IsUserLoggedIn()){
 	echo "<p>User logged in.</p>";
@@ -38,6 +36,12 @@ if($userMod->IsUserLoggedIn()){
 	echo "<p>Username is " . $userMod->GetUserName() . "</p>";
 }else{
 	echo "<p>User not logged in </p>";
+}
+
+if($userMod->IsAdmin()){
+	echo "<p> User is admin </p>";
+}else{
+	echo "<p> User is not admin </p>";
 }
 
 if($userMod->LogoutUser()){

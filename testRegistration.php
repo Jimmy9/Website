@@ -41,7 +41,7 @@ if(!($regMod->InputUsername(""))){
 if(!($regMod->InputUsername("trc202"))){
 	echo "<p>2/3 existing user test passed</p>";
 }
-if(($regMod->InputUsername("newUser"))){
+if(($regMod->InputUsername("workingPW"))){
 	echo "<p>3/3 new user test passed</p>";
 }
 echo "<p>Finished testing Input Username, Make sure all 3 tests passed</p>";
@@ -80,7 +80,7 @@ echo "<p>Finished testing send confirmation</p>";
 echo "<p></p>";
 
 echo "Testing ConfirmUser";
-if($regMod->ConfirmUser("5eb8c8e9116f5c34d245ad60bfaedcf8")){
+if($regMod->ConfirmUser("8f617757fb31917da9141eb94af916ae")){
 	echo "<p> Confirm User successfull </p>";
 }
 echo "Finished Testing ConfirmUser";

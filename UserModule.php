@@ -47,15 +47,13 @@ class UserModule
 			$stmt->execute();
 			$stmt->bind_result($hashedPassword);
 			$stmt->fetch();
-			$stmt->close();
-			echo $hashedPassword;
+			$stmt->close();			
 			$pwdHasher = new PasswordHash(8, FALSE);
-			if(!empty($hashedPassword) &&  $pwdHasher->CheckPassword($password, $hash))
+			if($pwdHasher->CheckPassword($password, $hashedPassword))
 			{
 				$_SESSION['username'] = $userName;
 				return true;
 			}
-			//DEBUG LINE echo "<p> password or username is incorrect but everything is working!</p>";
 		}
 		return false;
 	}
@@ -95,7 +93,23 @@ class UserModule
 	 **/
 	function IsAdmin()
 	{
-		
+		if(isset($_SESSION['username']))
+		{
+			
+			if($stmt = $this->dbConnect->prepare("SELECT Admin FROM usersinfo WHERE username=?"))
+			{
+				$stmt->bind_param("i", $_SESSION['username']);
+				$stmt->execute();
+				$stmt->bind_result($isAdmin);
+				$stmt->fetch();
+				$stmt->close();			
+				if($isAdmin == 1)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }
 ?>
