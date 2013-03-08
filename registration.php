@@ -1,39 +1,3 @@
-<?php session_start();
-// The Input Data of the registration Form
-// This class will encrpyt, perform validity checks
-// and upload the data to the Database if everything
-// checks out. Eventually it will be offloaded to it's own
-// file and placed within a restricted folder.
-
-    include_once dirname(__FILE__).'\secureimage\securimage.php';
-
-class RegForm
-{
-	var $userName = "";
-	var $passowrd = "";
-	var $realName = "";
-	var $email = "";
-	var $validCaptcha = false;
-	var $isError = false;
-	
-	function grabFromSubmit($uName, $pWord, $repPWord, $email, $fName, $lName)
-	{
-		$this->userName = $uName;
-		if($pWord == $repPWord)
-		{
-			$this->password = hash('sha256', $pWord);
-		}
-		$this->email = $email;
-		$this->realName = $fName . $lName;
-	} 
-	
-	function printData()
-	{
-		echo $this->userName . $this->realName;
-	}
-	
-};
-?>
 <html>
 <head>
 	<title> Discourse Analysis - Registration PAge</title>
@@ -72,7 +36,7 @@ class RegForm
 </head>
 <body>
 <?php
-$reg = new RegForm;
+include_once dirname(__FILE__).'/secureimage/securimage.php';
 $securimage = new Securimage();
 $catpchaError = null;
 $username = $password = $passwordAgain = $emial = $fname = $lname = null;
@@ -82,16 +46,43 @@ if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['pass
         && isset($_POST['firstName'])  && isset($_POST['lastName'])
         && isset($_POST['email']) )	
 {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    $passwordAgain = $_POST['passwordAgain'];
-    $emial = $_POST['email'];
-    $fname = $_POST['firstName'];
-    $lname = $_POST['lastName'];
-    
+
+	//
+	require('RegistrationModule.php');
+	require('DatabaseModule.php');
+    $dbMod = new DatabaseModule();
+	$connection = $dbMod->connect();
+	$regMod = new RegistrationModule($connection);
+	$encounteredError = false;
+	if(!$regMod->InputName($_POST['firstName'], $_POST['lastName']))
+	{
+		//TODO display name invalid error
+		$encounteredError = true;
+	}
+	if(!$regMod->InputUsername($_POST['username']))
+	{
+		//TODO display invalid or in use username error
+		$encounteredError = true;
+	}
+	if(!$regMod->InputPassword($_POST['password'], $_POST['passwordAgain']))
+	{
+		//TODO display password too short or does not match error
+		$encounteredError = true;
+	}
+	if(!$regMod->InputEmail($_POST['email'],$_POST['email']))
+	{
+		//TODO display email invalid error
+		$encounteredError = true;
+	}
+	if($encounteredError)
+	{
+		echo "<p>Encountered error</p>";
+	}else
+	{
+		echo "<p>Made it</p>";
+	}
     if($securimage->check($_POST['captcha_code']) == true){
-        $reg->grabFromSubmit($username, $password, $passwordAgain, $emial, $fname, $lname);
-        $reg->printData();
+        $regMod->RequestConfirmation();
     }
     else{
         $catpchaError = "The code did not match. Try Again";
