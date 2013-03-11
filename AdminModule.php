@@ -13,6 +13,11 @@
 class AdminUserModule
 {
 
+	private $dbConnect;
+	function AdminUserModule($dbConnect)
+	{
+		$this->dbConnect = $dbConnect;
+	}
 	/**
 	 * Changes a username from one username to another.
 	 * This will notify the user of the username change, and the new username.
@@ -20,12 +25,52 @@ class AdminUserModule
 	 * @param string $oldUsername the current name of the user
 	 * @param string $newUsername the name the user will have after it is changed
 	 *
-	 * @return bool returns false if the name could not be changed
+	 * @return String returns error Text
 	 *
 	 */
 	function ChangeUsername($oldUsername, $newUsername)
 	{
-	
+		if ( strlen($newUsername) > 3)
+		{
+			// Check if Old Username exist. Our interface should always have the correct old User name
+			if ($stmt = $this->dbConnect->prepare("SELECT COUNT(Username) AS UsernameCount FROM SELECT (usersinfo.Username FROM usersinfo) AS usernamestable WHERE Username = ?") )
+			{
+				$stmt->bind_program("s", $oldUsername);
+				$stmt->execute();
+				$stmt->bind_result($usernameCount);
+				$stmt->fetch();
+				$stmt->close();
+				if($usernameCount == 0)
+				{
+					return "Error: There is no username in the database with that name";
+				}
+			}
+			// Checks temp user table and the user table for copys of users that already exist.
+			if ($stmt = $this->dbConnect->prepare("SELECT COUNT(Username) AS UsernameCount FROM ((SELECT tempusersinfo.Username FROM tempusersinfo) UNION (SELECT usersinfo.Username FROM usersinfo)) AS usernamestable WHERE Username = ?") )
+			{
+				$stmt->bind_program("s", $newUsername);
+				$stmt->execute();
+				$stmt->bind_result($usernameCount);
+				$stmt->fetch();
+				$stmt->close();
+				if($usernameCount > 0)
+				{
+					return "Error: The new username already exist.";
+				}
+			}
+			// Updates the username
+			if ($stmt = $this->dbConnect->prepare("UPDATE usersinfo SET Username = ? WHERE Username = ?") )
+			{
+				$stmt->bind_program("ss", $newUsername, $oldUsername);
+				$stmt->execute();
+				
+			}
+			
+		}
+		else 
+		{
+			return "Error: Username is too short";
+		}
 	}
 	
 	/**
@@ -114,6 +159,16 @@ class AdminUserModule
 	 *
 	 */
 	function QueryUserList($startRange, $endRange, $sortType)
+	{
+	
+	}
+
+	/**
+	 * Emails the specified email address of the change
+	 *
+	 *
+	 */
+	function SendNotification($subject, $message, $email)
 	{
 	
 	}
