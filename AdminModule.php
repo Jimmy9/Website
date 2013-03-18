@@ -35,7 +35,7 @@ class AdminUserModule
 			// Check if Old Username exist. Our interface should always have the correct old User name
 			if ($stmt = $this->dbConnect->prepare("SELECT COUNT(Username) AS UsernameCount FROM SELECT (usersinfo.Username FROM usersinfo) AS usernamestable WHERE Username = ?") )
 			{
-				$stmt->bind_program("s", $oldUsername);
+				$stmt->bind_param("s", $oldUsername);
 				$stmt->execute();
 				$stmt->bind_result($usernameCount);
 				$stmt->fetch();
@@ -48,7 +48,7 @@ class AdminUserModule
 			// Checks temp user table and the user table for copys of users that already exist.
 			if ($stmt = $this->dbConnect->prepare("SELECT COUNT(Username) AS UsernameCount FROM ((SELECT tempusersinfo.Username FROM tempusersinfo) UNION (SELECT usersinfo.Username FROM usersinfo)) AS usernamestable WHERE Username = ?") )
 			{
-				$stmt->bind_program("s", $newUsername);
+				$stmt->bind_param("s", $newUsername);
 				$stmt->execute();
 				$stmt->bind_result($usernameCount);
 				$stmt->fetch();
@@ -61,9 +61,11 @@ class AdminUserModule
 			// Updates the username
 			if ($stmt = $this->dbConnect->prepare("UPDATE usersinfo SET Username = ? WHERE Username = ?") )
 			{
-				$stmt->bind_program("ss", $newUsername, $oldUsername);
+				$stmt->bind_param("ss", $newUsername, $oldUsername);
 				$stmt->execute();
+				$stmt->close();
 				
+				// TODO email user of their name change
 			}
 			
 		}
@@ -85,7 +87,30 @@ class AdminUserModule
 	 */
 	function ChangePassword($username, $newPassword)
 	{
-	
+		if ( $stmt = $this->dbConnect->prepare("SELECT COUNT(Username) AS UsernameCount FROM SELECT (usersinfo.Username FROM userinfo) AS usernamestable WHERE Username = ?")) 
+		{
+			$stmt->bind_param("s", $username);
+			$stmt->execute();
+			$stmt->bind_result($usernameCount);
+			$stmt->fetch();
+			$stmt->close();
+			if ( $usernameCount == 0 )
+			{
+				return "Error: There is no username in the database with that name";
+			}
+			else
+			{
+				if ( $stmt = $this->dbConnect->prepare("UPDATE userinfo SET Password = ? WHERE Username = ? ") )
+				{
+					$stmt->bind_param("ss", $newPassword, $username);
+					$stmt->execute();
+					$stmt->close();
+					
+					// TODO email user of their password change.
+				}
+			}
+			
+		}
 	}
 	
 	/**
@@ -99,6 +124,40 @@ class AdminUserModule
 	 */
 	function ChangeEmail($username, $newEmail)
 	{
+		$oldEmail = '';
+		if ( $stmt = $this->dbConnect->prepare("SELECT COUNT(Username) AS UsernameCount FROM SELECT (usersinfo.Username FROM userinfo) AS usernamestable WHERE Username = ?") )
+		{
+
+			$stmt->bind_param("s", $username);
+			$stmt->execute();
+			$stmt->bind_result($usernameCount);
+			$stmt->fetch();
+			$stmt->close();
+			
+			if ( $usernameCount == 0 )
+			{
+				return "Error: THere is no username in the database with that name";
+			}
+			else 
+			{
+				if ( $stmt = $this->dbConnect->prepare("SELECT Email FROM `usersinfo` WHERE username = ?") )
+				{
+					$stmt->bind_param("s", $username);
+					$stmt->execute();
+					$stmt->bind_result($oldEmail);
+					$stmt->fetch();
+					$stmt->close();
+				}
+				if ( $stmt = $this->dbConnect->prepare( "" ) )
+				{
+					$stmt->bind_param("ss", $newEmail, $username);
+					$stmt->execute();
+					$stmt->close();
+					
+					// TODO email both emails of the email change
+				}
+			}
+		}
 	
 	}
 	
@@ -115,7 +174,30 @@ class AdminUserModule
 	 */
 	function ChangeName($username, $newName)
 	{
-	
+		if ( $stmt = $this->dbConnect->prepare("SELECT COUNT(Username) AS UsernameCount FROM SELECT (usersinfo.Username FROM userinfo) AS usernamestable WHERE Username = ?") )
+		{
+			$stmt->bind_param("s", $username);
+			$stmt->execute();
+			$stmt->bind_result($usernameCount);
+			$stmt->fetch();
+			$stmt->close();
+			
+			if ( $usernameCount == 0 )
+			{
+				return "Error: There is no username in the database with the name";
+			}
+			else 
+			{
+				if ( $stmt == $this->dbConect->prepare("UPDATE userinfo SET Email = ? WHERE Username = ?" ) )
+				{
+					$stmt->bind_param("ss", $newName, $username);
+					$stmt->exectute();
+					$stmt->close();
+					
+					// TODO email user of their password change
+				}
+			}
+		}
 	}
 	
 	/**
@@ -123,7 +205,7 @@ class AdminUserModule
 	 */
 	function DeleteUser()
 	{
-	
+		
 	}
 	
 	/**
@@ -131,10 +213,31 @@ class AdminUserModule
 	 *
 	 * @param $user the user we wish to view
 	 * 
-	 * @return the complete entry of user
+	 * @return an Array of the request user 
+	 * 	return['Username'] = Username, return['Email'] = User Email, and return['Name'] = User Full Name to access data in array
 	 */
 	function ViewUser($user)
 	{
+		if( $stmt = $this->dbConnect->prepare( "SELECT Username, Email, Name FROM usersinfo WHERE Username = ? " ) )
+		{
+			$stmt->bind_param("s", $user);
+			if(!$stmt->execute() )
+			{
+				echo "SQL Error";
+			}
+			
+			// R in the variable name stands for "result"
+			$stmt->bind_result($r_uname, $r_email, $r_name);
+			$stmt->fetch();
+			
+			$row['Username'] = $r_uname;
+			$row['Email'] = $r_email;
+			$row['Name'] = $r_name;
+			
+			
+			$stmt->close();
+			return $row;	
+		}
 	
 	}
 
@@ -145,7 +248,7 @@ class AdminUserModule
 	 */
 	function TotalNumberOfUsers()
 	{
-	
+		
 	}
 	
 	/**
@@ -153,12 +256,12 @@ class AdminUserModule
 	 * 
 	 * @param int $startRange starting location of the query
 	 * @param int $endRange ending location of the query
-	 * @param string $sortType Type of sorting? (Name, Email)
+	 * @param string $sortBy Type of sorting? (Name, Email)
 	 *
-	 * @return returns the list of users.
+	 * @return returns the list of users
 	 *
 	 */
-	function QueryUserList($startRange, $endRange, $sortType)
+	function QueryUserList($startRange, $endRange, $sortBy)
 	{
 	
 	}
@@ -170,9 +273,10 @@ class AdminUserModule
 	 */
 	function SendNotification($subject, $message, $email)
 	{
-	
+		$sentmail = mail($email, $subject, $message);
 	}
 } 
+
 class AdminFileModule
 {
 	function EditFileOwner()
