@@ -15,9 +15,15 @@ if($connection == false){
 //START ADMIN TEST
 $adminMod = new AdminUserModule($connection);
 
-$changeUserLog = $adminMod->ChangeUsername("jhurst1", "newUser");	
+$row = $adminMod->ViewUser("newUser");
+ 
 
+
+$changeUserLog = $adminMod->ChangeUsername("jhurst1", "newUser");	
 echo $changeUserLog;
+
+
+
 
 //END ADMIN TEST
 ?>
