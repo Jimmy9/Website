@@ -1,5 +1,23 @@
 <?php
-
+require('UserModule.php');
+require('DatabaseModule.php');
+    $loginBar;
+    $dbMod = new DatabaseModule();
+    $connection = $dbMod->connect();
+    $userMod = new UserModule($connection);
+    
+    if(isset($_POST['action'])){
+        if ($_POST['action'] == "logout"){
+            $userMod->LogoutUser();
+        }
+    }
+    
+    if($userMod->IsUserLoggedIn()){
+        $loginBar = "<span style='padding: 5px;'><b>Welcome, ". $userMod->GetUserName()." ! <a href='#' onclick='document.logout.submit();'>(logout)</a></b></span>";
+    }
+    else{
+        $loginBar = "";
+    }
 
 ?>
 <html>
@@ -16,7 +34,7 @@
             <ul id="navigation">
                 <li><a class="navButton" href="home.php">Home</a></li>
                 <li><a class="navButton" href="upload.php">Upload to Workspace</a></li>
-                <li><a class="navButton" href="myfiles.php">My Files</a></li>
+                <li><a class="navButton" href="myFiles.php">My Files</a></li>
                 <li>
                     <a class="navButton" href="">Administrative Options</a>
                     <ul>
@@ -35,4 +53,13 @@
         </div>
         <div class="triangle-l"></div>
         <div class="triangle-r"></div>
+    </div>
+    <div class="loginBar">
+        <form style="padding-bottom: -2:px"name="logout" id="logout" action="login.php" method="post">
+            <input type="hidden" name="action" value="logout"></input>
+        <?php   
+            echo $loginBar;
+        ?>
+            <br />
+        </form>
     </div>
