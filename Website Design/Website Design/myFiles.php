@@ -1,4 +1,10 @@
-<?php include 'header.php'; ?>
+<?php 
+    include 'header.php';
+    //if the user is not logged in then it will redirect them to the login page
+    if(!$userMod->IsUserLoggedIn()){
+        header("location: login.php");
+    }
+?>
 
 <style>
     .leftButtonPanel{
