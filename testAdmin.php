@@ -22,6 +22,18 @@ $row = $adminMod->ViewUser("newUser");
 $changeUserLog = $adminMod->ChangeUsername("jhurst1", "newUser");	
 echo $changeUserLog;
 
+$numOfUsers = $adminMod->TotalNumberOfUsers();
+echo '<br/>'.$numOfUsers;
+
+$rows = $adminMod->QueryUserList(0, $numOfUsers, "Username", "ASC");
+
+if( is_array($rows) )
+{
+	foreach( $rows as $value )
+	{
+		echo '<br/>'.$value['Username'];
+	}
+}
 
 
 
