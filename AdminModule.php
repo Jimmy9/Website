@@ -172,6 +172,7 @@ class AdminUserModule
 	 * @return bool Return false if the real name could not be changed.
 	 *
 	 */
+	 
 	function ChangeName($username, $newName)
 	{
 		if ( $stmt = $this->dbConnect->prepare("SELECT COUNT(Username) AS UsernameCount FROM SELECT (usersinfo.Username FROM userinfo) AS usernamestable WHERE Username = ?") )
@@ -223,7 +224,6 @@ class AdminUserModule
 			$stmt->bind_param("s", $user);
 			if(!$stmt->execute() )
 			{
-				echo "SQL Error";
 			}
 			
 			// R in the variable name stands for "result"
@@ -244,11 +244,23 @@ class AdminUserModule
 	/**
 	 * Grabs the total number of users in the database
 	 *
-	 * @return int of number of users
+	 * @return int of number of users or false is the query can not run for some reason
 	 */
 	function TotalNumberOfUsers()
 	{
 		
+			if ($result = $this->dbConnect->query( "SELECT COUNT(Username) AS UsernameCount FROM usersinfo" ) )
+			{
+				
+				$row = $result->fetch_assoc();
+				$result->free();
+				return $row['UsernameCount'];
+			}
+			else 
+			{
+				return false;
+			}
+			
 	}
 	
 	/**
@@ -261,9 +273,41 @@ class AdminUserModule
 	 * @return returns the list of users
 	 *
 	 */
-	function QueryUserList($startRange, $endRange, $sortBy)
+	function QueryUserList($startRange, $endRange, $sortBy, $order)
 	{
-	
+		$maxUsers = $this->TotalNumberOfUsers();
+		if ( $endRange > $maxUsers )
+		{
+			$endRange = $maxUsers;
+		}
+		if ($startRange < 0 )
+		{
+			$startRange = 0;
+		}
+		if ($stmt = $this->dbConnect->prepare(" SELECT Username, Email, Name FROM usersinfo LIMIT ? , ? ") )
+		{
+		
+			$stmt->bind_param("ii", $startRange, $endRange);
+			$stmt->execute();
+			$stmt->bind_result($r_uname, $r_email, $r_name);
+			
+			$row = array();
+			
+			while( $stmt->fetch() )
+			{
+				$tempRow['Username'] = $r_uname;
+				$tempRow['Email'] = $r_email;
+				$tempRow['Name'] = $r_name;
+				
+				$row[] = $tempRow;
+			}
+			
+			$stmt->close();
+			return $row;
+		}
+		else {
+			return "Error: SQL Query Failed";
+		}
 	}
 
 	/**
