@@ -1,7 +1,7 @@
 <?php
 
 
-require('./lib/PasswordHash.php');
+include_once ('./lib/PasswordHash.php');
 
 /**
  *
@@ -45,11 +45,11 @@ class RegistrationModule
 	{
 		if(empty($username))
         {
-           return "Your username can not be blank." 
+           return "Your username can not be blank."; 
         }
         elseif(!(strlen($username) >= 3))
         {
-            return "Your username must be three characters or longer."
+            return "Your username must be three characters or longer.";
         }
         else
 		{
@@ -77,11 +77,11 @@ class RegistrationModule
 	{
 		if(!(strlen($password) >= 6))
         {
-            return "The password does not meet the minimum length requirement"
+            return "The password does not meet the minimum length requirement";
         }
         elseif(!(strcmp($password ,$confirmPassword) == 0))
         {
-            return "The passwords do not match"
+            return "The passwords do not match";
         }
         else
 		{
@@ -99,11 +99,11 @@ class RegistrationModule
 	{
 		if(!filter_var($email, FILTER_VALIDATE_EMAIL))
         {
-            return "The email provided is not valid"
+            return "The email provided is not valid";
         }
         elseif(!strcmp($email ,$confirmEmail) == 0)
         {
-            return "The emails provided do not match."
+            return "The emails provided do not match.";
         }
         else
 		{
