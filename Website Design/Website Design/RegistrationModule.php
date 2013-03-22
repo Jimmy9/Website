@@ -168,15 +168,11 @@ class RegistrationModule
 			{
 				$stmt->bind_param("ssss", $username, $password, $email, $name);
 				$stmt->execute();
-				$stmt->bind_result();
-				$stmt->fetch();
 				$stmt->close();
 				if($stmt = $this->dbConnect->prepare("DELETE FROM tempusersinfo WHERE confirm_code = ?"))
 				{
 					$stmt->bind_param("s", $key);
 					$stmt->execute();
-					$stmt->bind_result($removed);
-					$stmt->fetch();
 					$stmt->close();
 				}
 				return true;
