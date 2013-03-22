@@ -22,7 +22,7 @@ if (isset($_POST['username']) && isset($_POST['password'])){
 ?>	
 <div class="container">
     <br />
-     <div>
+     <div style="color:red; font-weight:bold; padding-left: 10px;"
          <?php
             if(strlen($message) > 0){
                 echo $message;
