@@ -1,57 +1,72 @@
 <?php 
 
 include 'header.php';
-include_once dirname(__FILE__).'\secureimage\securimage.php';
+include_once dirname(__FILE__).'/secureimage/securimage.php';
 
-    class RegForm
-    {
-        var $userName = "";
-        var $passowrd = "";
-        var $realName = "";
-        var $email = "";
-        var $validCaptcha = false;
-        var $isError = false;
 
-        function grabFromSubmit($uName, $pWord, $repPWord, $email, $fName, $lName)
-        {
-                $this->userName = $uName;
-                if($pWord == $repPWord)
-                {
-                        $this->password = hash('sha256', $pWord);
-                }
-                $this->email = $email;
-                $this->realName = $fName . $lName;
-        } 
-
-        function printData()
-        {
-                echo $this->userName . $this->realName;
-        }
-
-    };
-
-    $reg = new RegForm;
     $securimage = new Securimage();
     $catpchaError = null;
-    $username = $password = $passwordAgain = $emial = $fname = $lname = null;
 
-
-    if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['passwordAgain'])
-            && isset($_POST['firstName'])  && isset($_POST['lastName'])
-            && isset($_POST['email']) )	
+    include_once('RegistrationModule.php');
+    include_once('DatabaseModule.php');
+    $dbMod = new DatabaseModule();
+    $connection = $dbMod->connect();
+    $regMod = new RegistrationModule($connection);
+    
+    $firstName = $lastName = $username = $password = $passwordAgain = $email = "";
+    if(isset($_POST['firstName']))
+    {
+        $firstName = $_POST['firstName'];
+    }
+    if(isset($_POST['lastName']))
+    {
+        $lastName = $_POST['lastName'];
+    }
+    if(isset($_POST['username']))
     {
         $username = $_POST['username'];
+    }
+    if(isset($_POST['password']))
+    {
         $password = $_POST['password'];
+    }
+    if(isset($_POST['passwordAgain']))
+    {
         $passwordAgain = $_POST['passwordAgain'];
-        $emial = $_POST['email'];
-        $fname = $_POST['firstName'];
-        $lname = $_POST['lastName'];
-
-        if($securimage->check($_POST['captcha_code']) == true){
-            $reg->grabFromSubmit($username, $password, $passwordAgain, $emial, $fname, $lname);
-            $reg->printData();
+    }
+    if(isset($_POST['email']))
+    {
+        $email = $_POST['email'];
+    }
+    
+    if(isset($_POST['firstName']) || isset($_POST['lastName']))
+    {
+        $nameError = $regMod->InputName($_POST['firstName'], $_POST['lastName']);
+    }
+    if(isset($_POST['username']))
+    {
+        $usernameError = $regMod->InputUsername($_POST['username']);
+    }
+    if(isset($_POST['password']) || isset($_POST['passwordAgain']))
+    {
+        $passwordError = $regMod->InputPassword($_POST['password'], $_POST['passwordAgain']);
+    }
+    if(isset($_POST['email']))
+    {
+        $emailError = $regMod->InputEmail($_POST['email'],$_POST['email']);
+    }
+    
+    if(isset($_POST['captcha_code']))
+    {
+        if($securimage->check($_POST['captcha_code']) == true)
+        {
+            if($regMod->RequestConfirmation())
+            {
+                //TODO redirect to registration sucessful page
+            }
         }
-        else{
+        else
+        {
             $catpchaError = "The code did not match. Try Again";
         }
     }
@@ -139,21 +154,33 @@ include_once dirname(__FILE__).'\secureimage\securimage.php';
             <p>
                     <input type="text" id="username" size="35" name="username" placeholder="Username" value="<?php checkIsset($username) ?>" />
             </p>
+            <div style="color:#0000FF">
+                <p><?php if(isset($usernameError) && is_string($usernameError)){echo $usernameError;} ?></p>
+            </div>
             <p>
                     <input type="password" id="password" size="35" name="password" placeholder="Password" value="<?php checkIsset($password) ?>" />
             </p>
             <p>
                     <input type="password" id="passwordAgain" size="35" name="passwordAgain" placeholder="Password Again" value="<?php checkIsset($passwordAgain) ?>" />
             </p>
+            <div style="color:#0000FF">
+                <p><?php if(isset($passwordError) && is_string($passwordError)){echo $passwordError;} ?></p>
+            </div>
             <p>
-                    <input type="text" id="email" size="35" name="email" placeholder="Email Address" value="<?php checkIsset($emial) ?>" />
+                    <input type="text" id="email" size="35" name="email" placeholder="Email Address" value="<?php checkIsset($email) ?>" />
+            </p>
+            <div style="color:#0000FF">
+                <p><?php if(isset($emailError) && is_string ($emailError)){echo $emailError;} ?></p>
+            </div>
+            <p>
+                    <input type="text" name="firstName" size="35" placeholder="First Name" value="<?php checkIsset($firstName) ?>"/>
             </p>
             <p>
-                    <input type="text" name="firstName" size="35" placeholder="First Name" value="<?php checkIsset($fname) ?>"/>
+                    <input type="text" name="lastName" size="35" placeholder="Last Name" value="<?php checkIsset($lastName) ?>" />
             </p>
-            <p>
-                    <input type="text" name="lastName" size="35" placeholder="Last Name" value="<?php checkIsset($lname) ?>" />
-            </p>
+            <div style="color:#0000FF">
+                <p><?php if(isset($nameError) && is_string ($nameError)){echo $nameError;} ?></p>
+            </div>
             <br />
             <table align="center">
                 <tr>
@@ -161,7 +188,7 @@ include_once dirname(__FILE__).'\secureimage\securimage.php';
                         <img id="captcha" style="border: 1px solid #2F343B" src="secureimage/securimage_show.php" alt="CAPTCHA Image" />
                     </td>
                     <td>
-                        <a href="#" onclick="document.getElementById('captcha').src = 'secureimage/securimage_show.php';"><img src="secureimage/Images/Refresh Icon.jpg" alt="Refresh Image"/></a>
+                        <a href="#" onclick="document.getElementById('captcha').src = 'secureimage/securimage_show.php';"><img src="secureimage/images/Refresh Icon.jpg" alt="Refresh Image"/></a>
                     </td>
                 </tr>
                 <tr>
