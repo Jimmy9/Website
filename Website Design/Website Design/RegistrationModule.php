@@ -66,8 +66,8 @@ class RegistrationModule
 					return true;
 				}	
 			}
+            return "The entered username already exists";
 		}
-		return false;
 	}
 	
 	/**
@@ -124,9 +124,7 @@ class RegistrationModule
 			if($stmt = $this->dbConnect->prepare("INSERT INTO tempusersinfo(confirm_code, Username, Password, Email, Name)VALUES( ?, ?, ?, ?, ?)"))
 				{
 					$stmt->bind_param("sssss", $confirm_code, $this->username, $this->password, $this->email, $this->realName);
-					$stmt->execute();
-					$stmt->bind_result($result);
-					$stmt->fetch();
+					$result = $stmt->execute();
 					$stmt->close();
 					if($result)
 					{
