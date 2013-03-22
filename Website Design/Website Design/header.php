@@ -2,6 +2,7 @@
 require('UserModule.php');
 require('DatabaseModule.php');
     $loginBar;
+    $loginError = "";
     $dbMod = new DatabaseModule();
     $connection = $dbMod->connect();
     $userMod = new UserModule($connection);
@@ -9,6 +10,11 @@ require('DatabaseModule.php');
     if(isset($_POST['action'])){
         if ($_POST['action'] == "logout"){
             $userMod->LogoutUser();
+        }
+    }
+    if((isset($_GET['action']))){
+        if($_GET['action'] == "loginError"){
+            $loginError = "You must be logged in to access that page";
         }
     }
     
@@ -36,10 +42,10 @@ require('DatabaseModule.php');
                 <li><a class="navButton" href="upload.php">Upload to Workspace</a></li>
                 <li><a class="navButton" href="myFiles.php">My Files</a></li>
                 <li>
-                    <a class="navButton" href="">Administrative Options</a>
+                    <a class="navButton" href="adminuser.php">Administrative Options</a>
                     <ul>
-                        <li><a class="navButton" href="">File Options</a></li>
-                        <li><a class="navButton" href="">User Options</a></li>
+                        <li><a class="navButton" href="adminuser.php">File Options</a></li>
+                        <li><a class="navButton" href="adminuser.php">User Options</a></li>
                     </ul>
                 </li>
                 <li>
@@ -55,11 +61,16 @@ require('DatabaseModule.php');
         <div class="triangle-r"></div>
     </div>
     <div class="loginBar">
-        <form style="padding-bottom: -2:px"name="logout" id="logout" action="login.php" method="post">
+        <form style="padding-bottom: -2px"name="logout" id="logout" action="login.php" method="post">
             <input type="hidden" name="action" value="logout"></input>
         <?php   
             echo $loginBar;
         ?>
             <br />
         </form>
+        <div style="text-align: left; padding-left: 10px; color:red; font-weight: bold">
+            <?php 
+                echo $loginError;
+            ?>
+        </div>
     </div>
