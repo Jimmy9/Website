@@ -1,9 +1,17 @@
 <?php
-  include 'header.php';
+	include 'header.php';
+	include 'AdminModule.php';
+
+	include_once('DatabaseModule.php');
+	$dbMod = new DatabaseModule();
+	$connection = $dbMod->connect();
+	$adminUserMod = new AdminUserModule($connection);
     //if the user is not logged in then it will redirect them to the login page
+	/*
     if(!$userMod->IsUserLoggedIn()){
         header("location: login.php?action=loginError");
     }
+	*/
 ?>
 <div class="container">
     
@@ -37,29 +45,32 @@
             <th>Username</th>
             <th>Email</th>
             <th>Last Logged In</th>
-            <th>Password</th>
             <th># of Files Uploaded</th>
             <th>Permission</th>
             </tr>
-            <tr align="center">
-
-
-                    <td class ="usernamecell" width= 300;> 
-                            <form>
-                                    <input type="checkbox" name="username"> username
-                            </form>	
-                    </td>	
-                    <td class="emailcell" width= 200> email@gmail.com </td>
-                    <td class="lastloggedincell" width= 150> 2013-02-28 T 11:20 EST </td>
-                    <td class="passwordcell" width= 150> password </td>
-                    <td class="numfilecell" width= 100> 25 </td>
-                    <td class="permissioncell" width= 100>
-                        <select name="txn" tabindex="3" id="txn" class="fixed" onfocus="highlightInput(this.id)" onblur="unhighlightInput(this.id)">
-                            <option value="Admin" my="{{txn|genselected:"Admin"|safe}>Admin</option>
-                            <option value="User" my="{{txn|genselected:"User"|safe}}>User</option>
-                        </select> 
-                    </td>
-            </tr>
+			
+			<?php
+			
+			
+			$requestedUsers = $adminUserMod->QueryUserList(0, $adminUserMod->TotalNumberOfUsers(), "", "");
+			
+			if ( is_array($requestedUsers) )
+			{
+				foreach ( $requestedUsers as $user )
+				{
+					echo '<tr align="center">';
+					echo '<td class="usernamecell" width=300>';
+						echo '<form>';
+							echo '<input type="checkbox" name="'.$user['Username'].'">'.$user['Username'];
+						echo '</form>';
+					echo '</td>';
+					echo '<td class="emailcell" width=200>'.$user['Email'].'</td>';
+					echo '</tr>';
+					
+				}			
+			}
+			
+			?>
     </table>
 </dv>
 <?php
