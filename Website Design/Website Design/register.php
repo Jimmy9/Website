@@ -41,7 +41,7 @@ include_once dirname(__FILE__).'/secureimage/securimage.php';
     
     if(isset($_POST['firstName']) || isset($_POST['lastName']))
     {
-        $nameError = $regMod->InputName($_POST['firstName'], $_POST['lastName']);
+        $nameError = $regMod->InputName($_POST['firstName'] . " " . $_POST['lastName']);
     }
     if(isset($_POST['username']))
     {
