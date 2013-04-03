@@ -4,7 +4,7 @@
 <body>
 
 <p>You have successfully registered</p>
-<meta http-equiv="REFRESH" content="5;url=http://www.trc202.com"></HEAD>
+<meta http-equiv="REFRESH" content="5;url=index.html"></HEAD>
 
 </body>
 </html>
