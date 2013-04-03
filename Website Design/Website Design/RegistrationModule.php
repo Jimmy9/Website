@@ -157,28 +157,40 @@ class RegistrationModule
 	 **/
 	function ConfirmUser($key)
 	{
-		if($stmt = $this->dbConnect->prepare("SELECT Username, Email, Password, Name FROM tempusersinfo WHERE confirm_code= ? "))
-		{
-			$stmt->bind_param("s", $key);
-			$stmt->execute();
-			$stmt->bind_result($username, $email, $password, $name);
-			$stmt->fetch();
-			$stmt->close();		
-			if($stmt = $this->dbConnect->prepare("INSERT INTO usersinfo(Username, Password, Email, Name)VALUES(?, ?, ?, ?)"))
-			{
-				$stmt->bind_param("ssss", $username, $password, $email, $name);
-				$stmt->execute();
-				$stmt->close();
-				if($stmt = $this->dbConnect->prepare("DELETE FROM tempusersinfo WHERE confirm_code = ?"))
-				{
-					$stmt->bind_param("s", $key);
-					$stmt->execute();
-					$stmt->close();
-				}
-				return true;
-			}
-			return false;
-		}
+        if($stmt = $this->dbConnect->prepare("SELECT COUNT(*) FROM tempusersinfo WHERE confirm_code = ?"))
+        {
+            $stmt->bind_param("s", $key);
+            $stmt->execute();
+            $stmt->bind_result($count);
+            $stmt->fetch();
+            $stmt->close();
+            if($count > 0)
+            {
+                if($stmt = $this->dbConnect->prepare("SELECT Username, Email, Password, Name FROM tempusersinfo WHERE confirm_code= ? "))
+                {
+                    $stmt->bind_param("s", $key);
+                    $stmt->execute();
+                    $stmt->bind_result($username, $email, $password, $name);
+                    $stmt->fetch();
+                    $stmt->close();
+                    if($stmt = $this->dbConnect->prepare("INSERT INTO usersinfo(Username, Password, Email, Name)VALUES(?, ?, ?, ?)"))
+                    {
+                        $stmt->bind_param("ssss", $username, $password, $email, $name);
+                        $stmt->execute();
+                        $stmt->close();
+                        if($stmt = $this->dbConnect->prepare("DELETE FROM tempusersinfo WHERE confirm_code = ?"))
+                        {
+                            $stmt->bind_param("s", $key);
+                            $stmt->execute();
+                            $stmt->close();
+                        }
+                        return true;
+                    }
+                    
+                }
+            }
+        } 
+        return false;
 	}
 }
 ?>
