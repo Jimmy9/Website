@@ -62,7 +62,7 @@ include_once dirname(__FILE__).'/secureimage/securimage.php';
         {
             if($regMod->RequestConfirmation())
             {
-                echo '<meta http-equiv="REFRESH" content="0;url=http://www.trc202.com/registrationSuccess.php"></HEAD>';
+                echo '<meta http-equiv="REFRESH" content="0;url=registrationSuccess.php"></HEAD>';
                 //TODO redirect to registration sucessful page
             }
         }
