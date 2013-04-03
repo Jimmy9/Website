@@ -4,7 +4,7 @@
 <body>
 
 <p>You have successfully registered</p>
-<meta http-equiv="REFRESH" content="5;url=index.html"></HEAD>
+<meta http-equiv="REFRESH" content="5;url=home.php"></HEAD>
 
 </body>
 </html>
