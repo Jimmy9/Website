@@ -110,6 +110,11 @@ include_once dirname(__FILE__).'/secureimage/securimage.php';
                     return false;
                 }
             });
+            $('#refreshLink').click(function(){
+                $('#captcha').attr("src","secureimage/securimage_show.php?num=" + Math.floor(Math.random()*11));
+                return false;
+            })
+            
         }); 
     </script>
     <style>
@@ -144,7 +149,7 @@ include_once dirname(__FILE__).'/secureimage/securimage.php';
         background-color: #FAFAFA;
     }
 
-        </style>
+</style>
 <div class="container">
 
     <br />
@@ -189,7 +194,7 @@ include_once dirname(__FILE__).'/secureimage/securimage.php';
                         <img id="captcha" style="border: 1px solid #2F343B" src="secureimage/securimage_show.php" alt="CAPTCHA Image" />
                     </td>
                     <td>
-                        <a href="#" onclick="document.getElementById('captcha').src = 'secureimage/securimage_show.php';"><img src="secureimage/images/Refresh Icon.jpg" alt="Refresh Image"/></a>
+                        <a id="refreshLink" href="#"><img src="secureimage/images/Refresh Icon.jpg" alt="Refresh Image"/></a>
                     </td>
                 </tr>
                 <tr>
