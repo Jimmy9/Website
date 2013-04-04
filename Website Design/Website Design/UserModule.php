@@ -95,14 +95,13 @@ class UserModule
 	{
 		if(isset($_SESSION['username']))
 		{
-			
-			if($stmt = $this->dbConnect->prepare("SELECT Admin FROM usersinfo WHERE username=?"))
+			if($stmt = $this->dbConnect->prepare("SELECT Admin FROM usersinfo WHERE username= ?"))
 			{
-				$stmt->bind_param("i", $_SESSION['username']);
+				$stmt->bind_param("s", $_SESSION['username']);
 				$stmt->execute();
 				$stmt->bind_result($isAdmin);
 				$stmt->fetch();
-				$stmt->close();			
+				$stmt->close();
 				if($isAdmin == 1)
 				{
 					return true;
