@@ -48,9 +48,8 @@ class UserModule
 			$stmt->bind_result($hashedPassword);
 			$stmt->fetch();
 			$stmt->close();			
-			$pwdHasher = new PasswordHash(8, FALSE);
-			//if($pwdHasher->CheckPassword($password, $hashedPassword)) 	//uncomment this line and comment next line to add hashing security
-			if($password == $hashedPassword)
+			//verifies the hash of given password matches hash of stored password
+			if(password_verify($password, $hashedPassword))
 			{
 				$_SESSION['username'] = $userName;
 				return true;
